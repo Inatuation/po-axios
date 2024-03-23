@@ -1,0 +1,15 @@
+{
+    "compilerOptions": {
+        "declaration": true,
+        "esModuleInterop": true,
+        "allowSyntheticDefaultImports": true,
+        "target": "esnext", // 或者你的目标版本
+        "module": "esnext",
+        "lib": [
+            "es6",
+            "dom",
+            "es2015.promise" // 添加这一项
+        ],
+        "moduleResolution": "node"
+    }
+}
