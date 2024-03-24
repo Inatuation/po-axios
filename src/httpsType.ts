@@ -1,4 +1,4 @@
-import type { AxiosStatic, CreateAxiosDefaults, InternalAxiosRequestConfig } from 'axios';
+import type { AxiosError, AxiosStatic, CreateAxiosDefaults, InternalAxiosRequestConfig } from 'axios';
 
 interface BaseCustomConfig {
 	__retry?: false;
@@ -50,5 +50,5 @@ export interface PluginAxios extends CreateAxiosDefaults {
 
 export interface RequestControllerTypes {
 	abort: () => void;
-	shouldRetry: (() => boolean) | undefined;
+	shouldRetry: ((error: AxiosError) => boolean) | undefined;
 }

@@ -5,6 +5,10 @@
   "main": "dist/index.js",
   "types": "dist/types/index.d.ts",
   "type": "module",
+  "repository": {
+    "type": "gitee",
+    "url": "https://gitee.com/infatuation5858/po-axios.git"
+  },
   "scripts": {
     "build": "rollup -c"
   },

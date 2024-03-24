@@ -11,13 +11,13 @@ export const baseRequestInterceptorFulfilled = (config: RequestConfig) => {
 	let shouldRetry;
 	if (config.params?.retryConfig && config.params?.retryConfig.retry) {
 		config.__retry = config.params.retryConfig.retry;
+		config.__retryCount = config.params.retryConfig?.retryCount || 3;
+		config.__delay = config.params.retryConfig?.retryDelay || 300;
 		shouldRetry = config.params.retryConfig.shouldRetry;
 		delete config.params.retryConfig;
 	}
 	if (config.__retry) {
-		config.__retryCount = config.__retryCount ? config.__retryCount + 1 : 1; // 重试次数
-		config.__delay = config.__delay ? config.__delay : 300; // 重试次数
-		config.__retries = 3; // 默认重试次数
+		config.__retries = config.__retries ? config.__retries + 1 : 1; // 当前重试次数
 	}
 	const originController = requestController.get(config.url);
 	if (originController) {
@@ -35,20 +35,20 @@ export const baseResponseInterceptorRejected = async (error: AxiosError, instanc
 		throw error;
 	}
 	if (axios.isCancel(error)) {
-		return;
+		return Promise.reject(error);
 	}
 	const { __retryCount, __retries, __retry, __delay } = (error as any).config as RequestConfig;
 
 	if (!__retry) {
 		return Promise.reject(error);
 	}
-	if (__retryCount >= __retries) {
+	if (__retryCount <= __retries) {
 		return Promise.reject(error);
 	}
 	const controller = requestController.get((error as any).config?.url);
 	let retryFlag = true;
 	if (controller && controller.shouldRetry) {
-		retryFlag = controller.shouldRetry();
+		retryFlag = controller.shouldRetry(error as any);
 	}
 	if (!retryFlag) return Promise.reject(error);
 	// 请求重试

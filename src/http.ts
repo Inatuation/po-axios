@@ -50,7 +50,6 @@ class PoAxios {
 	}
 	cancelAllRequest() {
 		requestController.forEach((controller) => {
-			console.log(controller, 666);
 			controller.abort();
 		});
 	}
